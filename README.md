@@ -6,7 +6,7 @@ Requirements:
 - Vuex
 - WebSockets
 - Vue-model
-- CSS framework based on Flexbox 
+- Responsive CSS framework based on Flexbox 
 
 Tools:
 - vue-cli (https://github.com/vuejs/vue-cli)
