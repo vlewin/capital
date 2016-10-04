@@ -16,7 +16,7 @@ Tools:
 
 
 https://github.com/vuejs/vue/wiki/Vue-2.0-RC-Starter-Resources
-
+http://forum.vuejs.org/t/comm-between-parent-child-components/33/8
 
 ## Build Setup
 

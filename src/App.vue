@@ -1,20 +1,16 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <p>{{response}}</p>
+  <div>
+    <app-header></app-header>
 
-    <button id="start" v-on:click="start">Start</button>
-    <button id="start" v-on:click="stop">Stop</button>
-  </div>
+    <router-view></router-view>
+
+    <app-footer></app-footer>
+  <div>
 </template>
 
 <script>
-  import { cable } from './main.js'
-  // import * as websocket from './modules/websocket.js';
-
-  import { log, guid } from './modules/helpers.js'
-  import {eventHub } from './main.js'
+  import AppHeader from './AppHeader.vue'
+  import AppFooter from './AppFooter.vue'
 
   export default {
     data () {
@@ -25,59 +21,9 @@
       }
     },
 
-
-    created: function () {
-      console.log('Created')
-
-      let _this = this
-      eventHub.$on('received', function(data) {
-        console.info(data)
-        _this.response = data
-      })
-    },
-
-    mounted() {
-      console.log('Mounted')
-
-      let channel = { channel: "ClockChannel", uuid: guid() }
-      this.channel = cable.subscriptions.create(
-        channel,
-        {
-          connected: function() {
-            log("connected", this.identifier)
-          },
-
-          disconnected: function() {
-            log("disconnected", this.identifier)
-          },
-
-          rejected: function() {
-            log("rejected")
-          },
-
-          received: function(data) {
-            eventHub.$emit('received', data)
-          }
-      })
-    },
-
-    methods: {
-      start: function () {
-        this.msg = 'Clock started'
-        this.channel.perform('start')
-      },
-
-      stop: function () {
-        this.msg = 'Clock stoped'
-        this.channel.perform('stop')
-      }
+    components: {
+      AppHeader,
+      AppFooter
     }
-
   }
 </script>
-
-<style>
-  body {
-    font-family: Helvetica, sans-serif;
-  }
-</style>

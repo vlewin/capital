@@ -1,0 +1,10 @@
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+
+export let eventHub = new Vue()
+
+const app = new Vue({
+  router,
+  render: h => h(App)
+}).$mount('app')
