@@ -2,11 +2,23 @@
   <div>
     <h2>Events</h2>
 
-    <ul id="events">
+    <ol id="events">
       <li v-for="item in items">
-        {{ item.id }} {{ item.title }}
+        {{ item.name }} - {{ item.amount }} ({{ date(item.created_at) }})
       </li>
-    </ul>
+    </ol>
+
+    <p>
+      <label>Name:</label>
+      <input type="text" v-model="name">
+    </p>
+
+    <p>
+      <label>Amount:</label>
+      <input type="number" v-model="amount">
+    </p>
+
+    <button v-on:click="create">Create receipt</button>
   </div>
 </template>
 <script>
@@ -15,8 +27,8 @@
     // props: ['id'],
     data () {
       return {
-        id: 1,
-        open: true
+        name: null,
+        amount: 0,
       }
     },
 
@@ -27,14 +39,25 @@
     },
 
     beforeMount () {
-      this.$store.dispatch('FETCH_ITEMS', {
+      this.$store.dispatch('FETCH_RECEIPTS', {
         ids: [this.id]
       })
     },
 
     methods: {
-      pluralize (n) {
-        return n + (n === 1 ? ' reply' : ' replies')
+      date(created_at) {
+        let datetime = new Date(created_at)
+
+        return datetime.toLocaleDateString("de-DE")
+      },
+
+      create() {
+        this.$store.dispatch('CREATE_RECEIPT', {
+          receipt: {
+            name: this.name,
+            amount: this.amount
+          }
+        })
       }
     }
   }

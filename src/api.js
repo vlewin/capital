@@ -1,26 +1,19 @@
-export function fetchItems (ids) {
-  // return $.ajax({
-  //   url: 'https://jsonplaceholder.typicode.com/posts',
-  //   method: 'GET'
-  // }).then(function(data) {
-  //   console.log(data);
-  //   return data
-  // })
+import Vue from 'vue'
+import VueResource from 'vue-resource'
+Vue.use(VueResource)
 
-  let data = [
-    {
-      "userId": 1,
-      "id": 1,
-      "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-    },
-    {
-      "userId": 1,
-      "id": 2,
-      "title": "qui est esse",
-      "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
-    }
-  ]
+var resource = Vue.resource('http://localhost:3000/receipts');
 
-  return Promise.resolve(data)
+export function fetchReceipts() {
+  return resource.get({id: 1}).then((response) => {
+    return response.json()
+  })
+}
+
+export function createReceipt(receipt) {
+  return resource.save(receipt).then((response) => {
+    return response.json()
+  }, (response) => {
+    // error callback
+  });
 }

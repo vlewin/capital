@@ -1,9 +1,7 @@
 import Vue from 'vue'
-import App from './App.vue'
 import store from './store'
 import router from './router'
-import { sync } from 'vuex-router-sync'
-
+import App from './App.vue'
 
 
 // import { ActionCable } from 'actioncable-js'
@@ -11,6 +9,8 @@ import { sync } from 'vuex-router-sync'
 // export var cable = ActionCable.createConsumer("ws://localhost:3000/cable")
 export let eventHub = new Vue()
 
+
+// import { sync } from 'vuex-router-sync'
 
 // sync the router with the vuex store.
 // this registers `store.state.route`

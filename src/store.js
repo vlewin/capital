@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { fetchItems } from './api'
+import { fetchReceipts, createReceipt, fetchItems } from './api'
 
 Vue.use(Vuex)
 
@@ -11,16 +11,39 @@ const store = new Vuex.Store({
   },
 
   actions: {
-    FETCH_ITEMS: ({ commit, state }, { ids }) => {
-      console.log(commit)
-      console.log(state)
-      console.log(ids)
-      return fetchItems(ids).then(items => commit('SET_ITEMS', { items }))
-    }
+    FETCH_RECEIPTS: ({ commit, state }, { }) => {
+      return fetchReceipts().then(items => commit('SET_RECEIPTS', { items }))
+    },
+
+    CREATE_RECEIPT: ({ commit, state }, { receipt }) => {
+      console.info(receipt)
+      return createReceipt(receipt).then(item => commit('ADD_RECEIPT', { item }))
+    },
+
+    // FETCH_ITEMS: ({ commit, state }, { ids }) => {
+    //   console.log(commit)
+    //   console.log(state)
+    //   console.log(ids)
+    //   return fetchItems(ids).then(items => commit('SET_RECEIPTS', { items }))
+    // },
+    //
+    // CREATE_ITEM: ({ commit, state }, { item }) => {
+    //   return Promise.resolve().then(item => commit('ADD_ITEM', { item }))
+    // }
+
   },
 
   mutations: {
-    SET_ITEMS: (state, { items }) => {
+    ADD_RECEIPT: (state, { item }) => {
+      Vue.set(state.items, item.id, item)
+    },
+
+    // ADD_ITEM: ({ commit, state }, { item }) => {
+    //   console.log('ADD_ITEM', item)
+    //   state.items.push(item)
+    // },
+
+    SET_RECEIPTS: (state, { items }) => {
       items.forEach(item => {
         if (item) {
           Vue.set(state.items, item.id, item)
