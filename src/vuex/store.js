@@ -1,18 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { fetchReceipts, createReceipt, fetchItems } from './api'
+import websocket from './plugins/websocket.js'
+import { fetchReceipts, createReceipt, fetchItems } from './../services/api.js'
 
 Vue.use(Vuex)
 
+console.log(websocket)
+websocket.start()
+websocket.perform('start')
 
 const store = new Vuex.Store({
+  // plugins: [websocket],
+
   state: {
-    items: {/* [id: number]: Item */}
+    receipts: {/* [id: number]: Item */},
+    events: {/* [id: number]: Event */}
   },
 
   actions: {
     FETCH_RECEIPTS: ({ commit, state }, { }) => {
-      return fetchReceipts().then(items => commit('SET_RECEIPTS', { items }))
+      return fetchReceipts().then(receipts => commit('SET_RECEIPTS', { receipts }))
     },
 
     CREATE_RECEIPT: ({ commit, state }, { receipt }) => {
@@ -20,40 +27,38 @@ const store = new Vuex.Store({
       return createReceipt(receipt).then(item => commit('ADD_RECEIPT', { item }))
     },
 
-    // FETCH_ITEMS: ({ commit, state }, { ids }) => {
-    //   console.log(commit)
-    //   console.log(state)
-    //   console.log(ids)
-    //   return fetchItems(ids).then(items => commit('SET_RECEIPTS', { items }))
-    // },
-    //
-    // CREATE_ITEM: ({ commit, state }, { item }) => {
-    //   return Promise.resolve().then(item => commit('ADD_ITEM', { item }))
-    // }
-
+    WS_EVENT: ({ commit, state }, event) => {
+      console.info('WS_EVENT', event)
+      commit('ADD_EVENT', {event})
+    }
   },
 
   mutations: {
+    ADD_EVENT: (state, { event }) => {
+      console.info('ADD_EVENT', event)
+      Vue.set(state.events, event.id, event)
+    },
+
     ADD_RECEIPT: (state, { item }) => {
-      Vue.set(state.items, item.id, item)
+      Vue.set(state.receipts, item.id, item)
     },
 
     // ADD_ITEM: ({ commit, state }, { item }) => {
     //   console.log('ADD_ITEM', item)
-    //   state.items.push(item)
+    //   state.receipts.push(item)
     // },
 
-    SET_RECEIPTS: (state, { items }) => {
-      items.forEach(item => {
+    SET_RECEIPTS: (state, { receipts }) => {
+      receipts.forEach(item => {
         if (item) {
-          Vue.set(state.items, item.id, item)
+          Vue.set(state.receipts, item.id, item)
         }
       })
     }
   },
 
   getters: {
-    // ids of the items that should be currently displayed based on
+    // ids of the receipts that should be currently displayed based on
     // current list type and current pagination
     // activeIds (state) {
     //   const { activeType, itemsPerPage, lists } = state

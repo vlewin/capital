@@ -2,9 +2,15 @@
   <div>
     <h2>Events</h2>
 
-    <ol id="events">
-      <li v-for="item in items">
-        {{ item.name }} - {{ item.amount }} ({{ date(item.created_at) }})
+    <ul id="events">
+      <li v-for="item in events">
+        {{ item.id }} - {{ item.random_number }}
+      </li>
+    </ul>
+
+    <ol id="receipts">
+      <li v-for="receipt in receipts">
+        {{ receipt.name }} - {{ receipt.amount }} ({{ date(receipt.created_at) }})
       </li>
     </ol>
 
@@ -33,8 +39,12 @@
     },
 
     computed: {
-      items () {
-        return this.$store.state.items
+      receipts () {
+        return this.$store.state.receipts
+      },
+
+      events () {
+        return this.$store.state.events
       }
     },
 
