@@ -6,7 +6,7 @@ import store from './../store.js'
 import { log, guid } from './../../modules/helpers.js'
 
 let cable = ActionCable.createConsumer("ws://localhost:3000/cable")
-let options = { channel: "ClockChannel", uuid: '111' }
+let options = { channel: "EventChannel", uuid: '111' }
 let callbacks = {
   connected: function() {
     log("connected", this.identifier)
@@ -21,14 +21,31 @@ let callbacks = {
     log("rejected")
   },
 
-  received: function(data) {
-    log('Received', data)
-    // eventHub.$emit('received', data)
-    store.dispatch('WS_EVENT', data)
+  received: function(event) {
+    log('Received', event)
+    // eventHub.$emit('received', event)
 
-    // store.dispatch('WS_EVENT', {
-    //   data: data
-    // })
+
+
+    switch (event.type) {
+       case 'created':
+         store.dispatch('WS_EVENT_CREATED', event.record)
+         break;
+
+       case 'updated':
+         store.dispatch('WS_EVENT_UPDATED', event.record)
+         break;
+
+       case 'destroyed':
+         console.log('destroyed not implemented')
+         break;
+
+       default:
+         console.log('Unknown event type', event.type)
+         break;
+    }
+
+
   },
 
   start: function() {

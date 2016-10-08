@@ -4,7 +4,7 @@
 
     <ul id="events">
       <li v-for="item in events">
-        {{ item.id }} - {{ item.random_number }}
+        {{ item.id }} - {{ item.name }}
       </li>
     </ul>
 

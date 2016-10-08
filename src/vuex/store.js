@@ -27,10 +27,15 @@ const store = new Vuex.Store({
       return createReceipt(receipt).then(item => commit('ADD_RECEIPT', { item }))
     },
 
-    WS_EVENT: ({ commit, state }, event) => {
-      console.info('WS_EVENT', event)
+    WS_EVENT_CREATED: ({ commit, state }, event) => {
+      console.info('WS_EVENT_CREATED', event)
       commit('ADD_EVENT', {event})
-    }
+    },
+
+    WS_EVENT_UPDATED: ({ commit, state }, event) => {
+      console.info('WS_EVENT_UPDATED', event)
+      commit('ADD_EVENT', {event})
+    },
   },
 
   mutations: {
