@@ -1,16 +1,13 @@
-
-import { ActionCable } from 'actioncable-js'
-// import { cable } from './../main.js'
-// import { eventHub } from './../../main.js'
 import store from './../store.js'
+import { ActionCable } from 'actioncable-js'
 import { log, guid } from './../../modules/helpers.js'
 
 let cable = ActionCable.createConsumer("ws://localhost:3000/cable")
-let options = { channel: "EventChannel", uuid: '111' }
+let options = { channel: "EventChannel", uuid: guid() }
 let callbacks = {
   connected: function() {
     log("connected", this.identifier)
-    this.perform("start")
+    // this.perform("start")
   },
 
   disconnected: function() {
@@ -24,16 +21,34 @@ let callbacks = {
   received: function(event) {
     log('Received', event)
     // eventHub.$emit('received', event)
-
-
-
     switch (event.type) {
+       case 'record':
+         this.recordHandler(event)
+         break;
+
+       case 'job':
+         this.jobHandler(event)
+         break;
+
+       default:
+         console.log('Unknown event type', event.type)
+         break;
+    }
+
+
+
+
+
+  },
+
+  recordHandler: function(event) {
+    switch (event.state) {
        case 'created':
-         store.dispatch('WS_EVENT_CREATED', event.record)
+         store.dispatch('WS_EVENT_CREATED', event)
          break;
 
        case 'updated':
-         store.dispatch('WS_EVENT_UPDATED', event.record)
+         store.dispatch('WS_EVENT_UPDATED', event)
          break;
 
        case 'destroyed':
@@ -44,14 +59,23 @@ let callbacks = {
          console.log('Unknown event type', event.type)
          break;
     }
-
-
   },
 
-  start: function() {
-    console.log("starting clock")
-    this.perform("start")
-  },
+  jobHandler: function(event) {
+    switch (event.state) {
+       case 'done':
+         store.dispatch('WS_EVENT_JOB_DONE', event)
+         break;
+
+       default:
+         console.log('Unknown event type', event.type)
+         break;
+    }
+  }
+  // start: function() {
+  //   console.log("starting clock")
+  //   this.perform("start")
+  // },
 }
 
 export default cable.subscriptions.create(options, callbacks)

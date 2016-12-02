@@ -1,20 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import websocket from './plugins/websocket.js'
-import { fetchReceipts, createReceipt, fetchItems } from './../services/api.js'
+import { fetchReceipts, createReceipt, deleteReceipt } from './../services/receipt.js'
 
 Vue.use(Vuex)
 
-console.log(websocket)
-websocket.start()
-websocket.perform('start')
+// console.log(websocket)
+// websocket.start()
+// websocket.perform('start')
 
 const store = new Vuex.Store({
   // plugins: [websocket],
 
   state: {
     receipts: {/* [id: number]: Item */},
-    events: {/* [id: number]: Event */}
+    events: {/* [id: number]: Event */},
+    notifications: {/* [id: number]: Event */},
   },
 
   actions: {
@@ -27,6 +28,11 @@ const store = new Vuex.Store({
       return createReceipt(receipt).then(item => commit('ADD_RECEIPT', { item }))
     },
 
+    DELETE_RECEIPT: ({ commit, state }, receipt) => {
+      console.info('DELETE', receipt)
+      return deleteReceipt(receipt).then(commit('DELETE_RECEIPT', receipt))
+    },
+
     WS_EVENT_CREATED: ({ commit, state }, event) => {
       console.info('WS_EVENT_CREATED', event)
       commit('ADD_EVENT', {event})
@@ -36,17 +42,28 @@ const store = new Vuex.Store({
       console.info('WS_EVENT_UPDATED', event)
       commit('ADD_EVENT', {event})
     },
+
+    WS_EVENT_JOB_DONE: ({ commit, state }, event) => {
+      console.info('WS_EVENT_JOB_DONE', event)
+      commit('ADD_EVENT', {event})
+    },
   },
 
   mutations: {
     ADD_EVENT: (state, { event }) => {
       console.info('ADD_EVENT', event)
-      Vue.set(state.events, event.id, event)
+      Vue.set(state.events, event.item.id, event)
     },
 
     ADD_RECEIPT: (state, { item }) => {
       Vue.set(state.receipts, item.id, item)
     },
+
+    DELETE_RECEIPT: (state, receipt) => {
+      Vue.delete(state.receipts, receipt.id)
+      // Vue.set(state.receipts, item.id, item)
+    },
+
 
     // ADD_ITEM: ({ commit, state }, { item }) => {
     //   console.log('ADD_ITEM', item)

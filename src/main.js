@@ -3,6 +3,8 @@ import store from './vuex/store.js'
 import router from './router'
 import App from './App.vue'
 
+require('spectre.css')
+
 
 // import { ActionCable } from 'actioncable-js'
 
